@@ -54,7 +54,7 @@ module Lita
           feedback_msg = deploy_result.include?(ey_failure_msg) ? failed_msg : success_msg
           response.reply feedback_msg
         else
-          response.reply "Sorry, you don't have access; you must me at #{required_group_to_deploy(app, env)} group."
+          response.reply access_denied % { group_name: required_group_to_deploy(app, env) }
         end
       end
 
@@ -90,6 +90,10 @@ module Lita
 
       def failed_msg
         "Deployment failed! Shame on you!"
+      end
+
+      def access_denied
+        "Sorry, you don't have access; you must be at %{group_name} group."
       end
 
       def default_branch_for(app, env)
