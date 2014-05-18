@@ -4,12 +4,12 @@ module Lita
   module Handlers
     class EyDeploy < Handler
 
-      route(/deploy help/i, :help, command: true, help: {
-        "deploy help" => "Display list of apps and envs available, and groups authorized to deploy on them"
+      route(/ey deploy help/i, :help, command: true, help: {
+        "ey deploy help" => "Display list of apps and envs available, and groups authorized to deploy on them"
       })
 
-      route(/deploy (\w*) (\w*)( [\w\/\.\-\_]*)?/i, :deploy, command: true, help: {
-        "deploy [app] [env] <branch_name>" => "Deploy specified branch (or default) to env [test, staging, production]"
+      route(/ey deploy (\w*) (\w*)( [\w\/\.\-\_]*)?/i, :deploy, command: true, help: {
+        "ey deploy [app] [env] <branch_name>" => "Deploy specified branch (or default) to env [test, staging, production]"
       })
 
       def self.default_config(config)
@@ -37,8 +37,8 @@ module Lita
       end
 
       def deploy(response)
-        app    = response.matches[0][0].strip
-        env    = response.matches[0][1].strip
+        app = response.matches[0][0].strip
+        env = response.matches[0][1].strip
 
         response.reply "Deploy what to where?" and return unless valid_app?(app) && valid_env?(app, env)
 
