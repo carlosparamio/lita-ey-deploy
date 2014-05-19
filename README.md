@@ -23,18 +23,18 @@ Add required configuration to lita_config.rb file:
       "name" => "my_app_name_at_ey",
       "envs" => {
         "test" => {
-          name: "testing"
-          auth_group: "devs"
+          name: "testing",
+          auth_group: "devs",
           default_branch: "develop"
         },
         "stage" => {
-          name: "staging"
-          auth_group: "testers"
+          name: "staging",
+          auth_group: "testers",
           default_branch: "stage"
         },
         "production" => {
-          name: "production"
-          auth_group: "devops"
+          name: "production",
+          auth_group: "devops",
           default_branch: "master"
         }
       }
