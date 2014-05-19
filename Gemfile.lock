@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    lita-ey-deploy (0.0.2)
+    lita-ey-deploy (0.0.3)
       engineyard
       lita (>= 3.2.0)
 
