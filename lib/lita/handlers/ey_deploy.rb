@@ -47,9 +47,7 @@ module Lita
         if can_deploy?(response.user, app, env)
           response.reply "Deploying #{app} branch '#{branch}' to #{env}"
 
-          cmd = ey_deploy_cmd(app, env, branch)
-          response.reply cmd
-          deploy_result = `#{cmd}`
+          deploy_result = `#{ey_deploy_cmd(app, env, branch)}`
 
           feedback_msg = deploy_result.include?(ey_failure_msg) ? failed_msg : success_msg
           response.reply feedback_msg
