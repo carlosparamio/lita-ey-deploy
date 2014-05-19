@@ -42,6 +42,10 @@ Add required configuration to lita_config.rb file:
   }
 ```
 
+## See also
+
+[lita-ey-info](http://github.com/carlosparamio/lita-ey-info)
+
 ## License
 
 [MIT](http://opensource.org/licenses/MIT)
