@@ -9,7 +9,19 @@ module Lita
       })
 
       route(/ey deploy (\w*) (\w*)( [\w\/\.\-\_]*)?/i, :deploy, command: true, help: {
-        "ey deploy [app] [env] <branch_name>" => "Deploy specified branch (or default) to env [test, staging, production]"
+        "ey deploy [app] [env] <branch_name>" => "Deploy specified branch (or default) to a particular app env"
+      })
+
+      route(/ey rollback (\w*) (\w*)/i, :rollback, command: true, help: {
+        "ey rollback [app] [env]" => "Rollback a particular app env to previous version"
+      })
+
+      route(/ey maintenance on (\w*) (\w*)/i, :enable_maintenance, command: true, help: {
+        "ey maintenance on [app] [env]" => "Place maintenance page at a particular app env"
+      })
+
+      route(/ey maintenance off (\w*) (\w*)/i, :disable_maintenance, command: true, help: {
+        "ey maintenance off [app] [env]" => "Disable maintenance page at a particular app env"
       })
 
       def self.default_config(config)
@@ -47,12 +59,71 @@ module Lita
         if can_deploy?(response.user, app, env)
           response.reply "Deploying #{app} branch '#{branch}' to #{env}"
 
-          deploy_result = `#{ey_deploy_cmd(app, env, branch)}`
+          cmd = ey_deploy_cmd(app, env, branch)
+          Lita.logger.info cmd
+          deploy_result = `#{cmd}`
 
           feedback_msg = deploy_result.include?(ey_failure_msg) ? failed_msg : success_msg
           response.reply feedback_msg
         else
-          response.reply access_denied % { group_name: required_group_to_deploy(app, env) }
+          response.reply access_denied % { group_name: required_group_to_access(app, env) }
+        end
+      end
+
+      def rollback(response)
+        app = response.matches[0][0].strip
+        env = response.matches[0][1].strip
+
+        response.reply "Rollback what?" and return unless valid_app?(app) && valid_env?(app, env)
+
+        if can_deploy?(response.user, app, env)
+          response.reply "Rolling back #{app} #{env} to previous version..."
+
+          cmd = ey_rollback_cmd(app, env)
+          Lita.logger.info cmd
+          result = `#{cmd}`
+
+          response.reply result
+        else
+          response.reply access_denied % { group_name: required_group_to_access(app, env) }
+        end
+      end
+
+      def enable_maintenance(response)
+        app = response.matches[0][0].strip
+        env = response.matches[0][1].strip
+
+        response.reply "Place maintenance page where?" and return unless valid_app?(app) && valid_env?(app, env)
+
+        if can_deploy?(response.user, app, env)
+          response.reply "Placing maintenance page at #{app} #{env}..."
+
+          cmd = ey_maintenance_on_cmd(app, env)
+          Lita.logger.info cmd
+          result = `#{cmd}`
+
+          response.reply result
+        else
+          response.reply access_denied % { group_name: required_group_to_access(app, env) }
+        end
+      end
+
+      def disable_maintenance(response)
+        app = response.matches[0][0].strip
+        env = response.matches[0][1].strip
+
+        response.reply "Disable maintenance page where?" and return unless valid_app?(app) && valid_env?(app, env)
+
+        if can_deploy?(response.user, app, env)
+          response.reply "Disabling maintenance page at #{app} #{env}..."
+
+          cmd = ey_maintenance_on_cmd(app, env)
+          Lita.logger.info cmd
+          result = `#{cmd}`
+
+          response.reply result
+        else
+          response.reply access_denied % { group_name: required_group_to_access(app, env) }
         end
       end
 
@@ -65,17 +136,29 @@ module Lita
       end
 
       def can_deploy?(user, app, env)
-        group = required_group_to_deploy(app, env)
+        group = required_group_to_access(app, env)
         return true unless group
-        Lita::Authorization.user_in_group? user, required_group_to_deploy(app, env)
+        Lita::Authorization.user_in_group? user, required_group_to_access(app, env)
       end
 
-      def required_group_to_deploy(app, env)
+      def required_group_to_access(app, env)
         config.apps[app]["envs"][env]["auth_group"]
       end
 
       def ey_deploy_cmd(app, env, branch)
         "bundle exec ey deploy --app='#{ey_app(app)}' --environment='#{ey_env(app, env)}' --ref='refs/heads/#{branch}' --migrate='rake db:migrate' --api-token=#{config.api_token}"
+      end
+
+      def ey_rollback_cmd(app, env)
+        "bundle exec ey rollback --app='#{ey_app(app)}' --environment='#{ey_env(app, env)}' --api-token=#{config.api_token}"
+      end
+
+      def ey_maintenance_on_cmd(app, env)
+        "bundle exec ey web disable --app='#{ey_app(app)}' --environment='#{ey_env(app, env)}' --api-token=#{config.api_token}"
+      end
+
+      def ey_maintenance_off_cmd(app, env)
+        "bundle exec ey web enable --app='#{ey_app(app)}' --environment='#{ey_env(app, env)}' --api-token=#{config.api_token}"
       end
 
       def ey_failure_msg

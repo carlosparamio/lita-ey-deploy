@@ -4,7 +4,7 @@
 [![Code Climate](https://codeclimate.com/github/carlosparamio/lita-ey-deploy.png)](https://codeclimate.com/github/carlosparamio/lita-ey-deploy)
 [![Coverage Status](https://coveralls.io/repos/carlosparamio/lita-ey-deploy/badge.png)](https://coveralls.io/r/carlosparamio/lita-ey-deploy)
 
-**lita-ey-deploy** is a handler for [Lita](http://lita.io/) that allows to manage deployments on EngineYard.
+**lita-ey-deploy** is a handler for [Lita](http://lita.io/) that allows to manage deployments, rollbacks and maintenance page management on EngineYard.
 
 ## Installation
 
