@@ -3,7 +3,7 @@ module Lita
     class EyDeploy < EyBase
 
       route(/ey deploy (\w*) (\w*)( [\w\/\.\-\_]*)?/i, :deploy, command: true, help: {
-        "ey deploy [app] [env] <branch_name>" => "Deploy specified branch (or default) to a particular app env"
+        "ey deploy [app] [env] <git_ref>" => "Deploy specified tag / branch / ref (or default) to a particular app env"
       })
 
       route(/ey rollback (\w*) (\w*)/i, :rollback, command: true, help: {
@@ -24,12 +24,12 @@ module Lita
 
         response.reply "Deploy what to where?" and return unless valid_app?(app) && valid_env?(app, env)
 
-        branch = (response.matches[0][2] || default_branch_for(app, env)).strip
+        git_ref = (response.matches[0][2] || default_branch_for(app, env)).strip
 
         do_if_can_access(response, app, env) do
-          response.reply "Deploying #{app} branch '#{branch}' to #{env}"
+          response.reply "Deploying #{app} git ref '#{git_ref}' to #{env}"
 
-          cmd = ey_deploy_cmd(app, env, branch)
+          cmd = ey_deploy_cmd(app, env, git_ref)
           Lita.logger.info cmd
           deploy_result = `#{cmd}`
 
@@ -91,8 +91,8 @@ module Lita
 
     private
 
-      def ey_deploy_cmd(app, env, branch)
-        "bundle exec ey deploy --app='#{ey_app(app)}' --environment='#{ey_env(app, env)}' --ref='refs/heads/#{branch}' --migrate='rake db:migrate' --api-token=#{config.api_token}"
+      def ey_deploy_cmd(app, env, git_ref)
+        "bundle exec ey deploy --app='#{ey_app(app)}' --environment='#{ey_env(app, env)}' -r='#{git_ref}' --migrate='rake db:migrate' --api-token=#{config.api_token}"
       end
 
       def ey_rollback_cmd(app, env)
