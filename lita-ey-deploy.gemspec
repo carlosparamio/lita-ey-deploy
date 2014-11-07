@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "lita-ey-deploy"
-  spec.version       = "0.0.6"
+  spec.version       = "0.0.7"
   spec.authors       = ["Carlos Paramio"]
   spec.email         = ["cparamio@avallain.com"]
   spec.description   = %q{A Lita handler for EngineYard deployments.}

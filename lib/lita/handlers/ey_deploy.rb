@@ -92,7 +92,7 @@ module Lita
     private
 
       def ey_deploy_cmd(app, env, git_ref)
-        "bundle exec ey deploy --app='#{ey_app(app)}' --environment='#{ey_env(app, env)}' -r='#{git_ref}' --migrate='rake db:migrate' --api-token=#{config.api_token}"
+        "bundle exec ey deploy --app='#{ey_app(app)}' --environment='#{ey_env(app, env)}' -R '#{git_ref}' --migrate='rake db:migrate' --api-token=#{config.api_token}"
       end
 
       def ey_rollback_cmd(app, env)
