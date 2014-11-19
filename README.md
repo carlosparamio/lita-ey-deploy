@@ -1,5 +1,6 @@
 # lita-ey-deploy
 
+[![Gem Version](https://badge.fury.io/rb/lita-ey-deploy.svg)](http://badge.fury.io/rb/lita-ey-deploy)
 [![Build Status](https://travis-ci.org/carlosparamio/lita-ey-deploy.png?branch=master)](https://travis-ci.org/carlosparamio/lita-ey-deploy)
 [![Code Climate](https://codeclimate.com/github/carlosparamio/lita-ey-deploy.png)](https://codeclimate.com/github/carlosparamio/lita-ey-deploy)
 [![Coverage Status](https://coveralls.io/repos/carlosparamio/lita-ey-deploy/badge.png)](https://coveralls.io/r/carlosparamio/lita-ey-deploy)
